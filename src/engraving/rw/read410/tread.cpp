@@ -650,7 +650,9 @@ void TRead::read(TempoText* t, XmlReader& e, ReadContext& ctx)
             t->setTempo(TConv::fromXml(e.readAsciiText(), Constants::DEFAULT_TEMPO));
         } else if (tag == "followText") {
             t->setFollowText(e.readInt());
-        } else if (tag == "type") {
+        } else if (tag == "relative") {
+            t->setRelative(e.readDouble());
+        }else if (tag == "type") {
             auto type = e.readAsciiText();
             if (type == "aTempo") {
                 t->setTempoTextType(TempoTextType::A_TEMPO);

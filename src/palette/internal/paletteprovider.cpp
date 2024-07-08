@@ -583,8 +583,8 @@ bool UserPaletteController::applyPaletteElement(const QModelIndex& index, Qt::Ke
     if (!notation) {
         return false;
     }
-
-    return notation->interaction()->applyPaletteElement(cell->element.get(), modifiers);
+    auto e = cell->element.get();
+    return notation->interaction()->applyPaletteElement(e, modifiers);
 }
 
 // ========================================================

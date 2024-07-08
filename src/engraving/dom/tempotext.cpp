@@ -62,6 +62,7 @@ static const ElementStyle tempoStyle {
 TempoText::TempoText(Segment* parent)
     : TextBase(ElementType::TEMPO_TEXT, parent, TextStyleType::TEMPO, ElementFlag::SYSTEM | ElementFlag::ON_STAFF)
 {
+    LOGD() << "Called Tempo Text Constructor";
     initElementStyle(&tempoStyle);
     m_tempoTextType  = TempoTextType::NORMAL;
     m_tempo          = 2.0;        // propertyDefault(P_TEMPO).toDouble();
@@ -69,6 +70,13 @@ TempoText::TempoText(Segment* parent)
     m_relative       = 1.0;
     m_isRelative     = false;
 }
+
+// TempoText::TempoText(const TempoText& tt)
+//     : TextBase(tt)
+// {
+//     LOGD()<< "Went into tempo Text copy constructor with original is relative" << tt.m_isRelative <<" With mrelative"<< tt.m_relative <<" Tempo of " << tt.tempoBpm();
+//     m_relative = 4.25;
+// }
 
 void TempoText::setTempoTextType(TempoTextType ttt)
 {
@@ -471,8 +479,10 @@ String TempoText::accessibleInfo() const
     }
 }
 
+
 void TempoText::added()
 {
+    LOGD() << "Added with is relative " << this->m_isRelative << " Tempo of " << this->tempo().toBPM().val << " Relative of " << this->m_relative;
     updateTempo();
     updateScore();
 }

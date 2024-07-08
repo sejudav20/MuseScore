@@ -73,6 +73,7 @@ PaletteCell::PaletteCell(QObject* parent)
 PaletteCell::PaletteCell(ElementPtr e, const QString& _name, qreal _mag, const QPointF& _offset, const QString& _tag, QObject* parent)
     : QObject(parent), element(e), name(_name), mag(_mag), xoffset(_offset.x()), yoffset(_offset.y()), tag(_tag)
 {
+    LOGD() << "Pallete cell type " << e->typeName();
     id = makeId();
     drawStaff = needsStaff(element);
 }

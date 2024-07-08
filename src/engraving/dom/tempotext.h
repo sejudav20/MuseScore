@@ -50,7 +50,12 @@ class TempoText final : public TextBase
 public:
     TempoText(Segment* parent);
 
-    TempoText* clone() const override { return new TempoText(*this); }
+    TempoText* clone() const override {
+        TempoText* m = new TempoText(*this);
+        LOGD() << "Original with tempo:" << this->m_tempo.val << " and relative" << this->m_isRelative << " with " << this->m_relative;
+        LOGD() << "Copy Made with tempo:" << m->m_tempo.val << " and relative" << m->m_isRelative << " with " << m->m_relative;
+        return m;
+    }
 
     Segment* segment() const { return toSegment(explicitParent()); }
     Measure* measure() const { return toMeasure(explicitParent()->explicitParent()); }
@@ -62,8 +67,9 @@ public:
     double tempoBpm() const;
     void setTempo(BeatsPerSecond v);
     void undoSetTempo(double v);
-    bool isRelative() { return m_isRelative; }
+    bool isRelative() const { return m_isRelative; }
     void setRelative(double v) { m_isRelative = true; m_relative = v; }
+    double getRelative() const { return m_relative;}
 
     bool isNormal() const { return m_tempoTextType == TempoTextType::NORMAL; }
     void setNormal() { setTempoTextType(TempoTextType::NORMAL); }
@@ -96,6 +102,7 @@ protected:
     void added() override;
     void removed() override;
     void commitText() override;
+    // TempoText(const TempoText&);
 
     void undoChangeProperty(Pid id, const PropertyValue&, PropertyFlags ps) override;
 
