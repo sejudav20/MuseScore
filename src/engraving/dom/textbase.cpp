@@ -1667,7 +1667,7 @@ String TextBlock::text(int col1, int len, bool withFormat) const
 TextBase::TextBase(const ElementType& type, EngravingItem* parent, TextStyleType tid, ElementFlags f)
     : EngravingItem(type, parent, f | ElementFlag::MOVABLE)
 {
-    LOGD()<< "TextBase constructor one called";
+    //LOGD()<< "TextBase constructor one called";
     m_textLineSpacing        = 1.0;
     m_textStyleType          = tid;
     m_bgColor                = Color::transparent;
@@ -1686,13 +1686,13 @@ TextBase::TextBase(const ElementType& type, EngravingItem* parent, TextStyleType
 TextBase::TextBase(const ElementType& type, EngravingItem* parent, ElementFlags f)
     : TextBase(type, parent, TextStyleType::DEFAULT, f)
 {
-    LOGD()<< "TextBase constructor two called";
+    //LOGD()<< "TextBase constructor two called";
 }
 
 TextBase::TextBase(const TextBase& st)
     : EngravingItem(st)
 {
-    LOGD()<< "TextBase copy called";
+    //LOGD()<< "TextBase copy called";
     m_cursor                      = new TextCursor(this);
     m_cursor->setFormat(*(st.cursor()->format()));
     m_text                        = st.m_text;

@@ -86,6 +86,7 @@ public:
 
     void updateTempo();
     void updateRelative();
+    void checkIsRelative();
 
     TDuration duration() const;
 

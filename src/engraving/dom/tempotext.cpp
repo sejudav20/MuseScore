@@ -62,7 +62,7 @@ static const ElementStyle tempoStyle {
 TempoText::TempoText(Segment* parent)
     : TextBase(ElementType::TEMPO_TEXT, parent, TextStyleType::TEMPO, ElementFlag::SYSTEM | ElementFlag::ON_STAFF)
 {
-    LOGD() << "Called Tempo Text Constructor";
+    //LOGD() << "Called Tempo Text Constructor";
     initElementStyle(&tempoStyle);
     m_tempoTextType  = TempoTextType::NORMAL;
     m_tempo          = 2.0;        // propertyDefault(P_TEMPO).toDouble();
@@ -323,6 +323,61 @@ void TempoText::updateTempo()
 }
 
 //---------------------------------------------------------
+//   checkIsRelative
+//---------------------------------------------------------
+
+void TempoText::checkIsRelative()
+{
+    // cache regexp, they are costly to create
+    static std::unordered_map<String, std::regex> regexps;
+    static std::unordered_map<String, std::regex> regexps2;
+    String s = plainText();
+    s.replace(u",", u".");
+    s.replace(u"<sym>space</sym>", u" ");
+    s.replace(u"≒", u"=");
+    s.replace(u"≈", u"=");
+    s.replace(u"~", u"=");
+    s.replace(u"ca.", u"");
+    s.replace(u"approx.", u"");
+    std::string su8 = s.toStdString();
+    for (const TempoPattern& pa : tp) {
+        String pattern = String::fromUtf8(pa.pattern);
+        std::regex re;
+        if (!muse::contains(regexps, String::fromUtf8(pa.pattern))) {
+            re = std::regex(String(u"%1\\s*=\\s*(\\d+[.]{0,1}\\d*)\\s*").arg(pattern).toStdString());
+            regexps[pattern] = re;
+        }
+        re = muse::value(regexps, pattern);
+        std::smatch match;
+        std::regex_search(su8, match, re);
+        if (!match.empty()) {
+            // Non-Relative TempoText so an update does not need to be made
+            return;
+        } else {
+            for (const TempoPattern& pa2 : tp) {
+                String pattern2 = String::fromUtf8(pa2.pattern);
+                String key = String(u"%1_%2").arg(pattern, pattern2);
+                std::regex re2;
+                if (!muse::contains(regexps2, key)) {
+                    re2 = std::regex(String(u"%1\\s*=\\s*%2\\s*").arg(pattern, pattern2).toStdString());
+                    regexps2[key] = re2;
+                }
+                re2 = muse::value(regexps2, key);
+                std::smatch match2;
+                std::regex_search(su8, match2, re2);
+                if (!match2.empty()) {
+                    m_relative = pa2.f / pa.f;
+                    m_isRelative = true;
+                    updateRelative();
+                    updateScore();
+                    return;
+                }
+            }
+        }
+    }
+}
+
+//---------------------------------------------------------
 //   setTempo
 //---------------------------------------------------------
 
@@ -482,8 +537,9 @@ String TempoText::accessibleInfo() const
 
 void TempoText::added()
 {
+
+    checkIsRelative();
     LOGD() << "Added with is relative " << this->m_isRelative << " Tempo of " << this->tempo().toBPM().val << " Relative of " << this->m_relative;
-    updateTempo();
     updateScore();
 }
 
