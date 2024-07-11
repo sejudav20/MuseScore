@@ -51,10 +51,7 @@ public:
     TempoText(Segment* parent);
 
     TempoText* clone() const override {
-        TempoText* m = new TempoText(*this);
-        LOGD() << "Original with tempo:" << this->m_tempo.val << " and relative" << this->m_isRelative << " with " << this->m_relative;
-        LOGD() << "Copy Made with tempo:" << m->m_tempo.val << " and relative" << m->m_isRelative << " with " << m->m_relative;
-        return m;
+        return new TempoText(*this);
     }
 
     Segment* segment() const { return toSegment(explicitParent()); }

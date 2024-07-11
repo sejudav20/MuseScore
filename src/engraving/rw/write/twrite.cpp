@@ -2934,9 +2934,6 @@ void TWrite::write(const TempoText* item, XmlWriter& xml, WriteContext& ctx)
     if (item->followText()) {
         xml.tag("followText", item->followText());
     }
-    if (item->isRelative()) {
-        xml.tag("relative", item->getRelative());
-    }
     switch (item->tempoTextType()) {
     case TempoTextType::NORMAL:
         break;

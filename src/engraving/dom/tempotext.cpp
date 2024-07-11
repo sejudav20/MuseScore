@@ -534,12 +534,9 @@ String TempoText::accessibleInfo() const
     }
 }
 
-
 void TempoText::added()
 {
-
     checkIsRelative();
-    LOGD() << "Added with is relative " << this->m_isRelative << " Tempo of " << this->tempo().toBPM().val << " Relative of " << this->m_relative;
     updateScore();
 }
 
